@@ -177,12 +177,12 @@ fn parse_network(network: Option<String>) -> anyhow::Result<wallet::Network> {
             "mainnet" => Ok(wallet::Network::Mainnet),
             "testnet" => Ok(wallet::Network::Testnet),
             "signet" => Ok(wallet::Network::Signet),
-            "regtest" => Ok(wallet::Network::Regtest),
+            "regtest" => Ok(wallet::Network::Mainnet),
             &_ => Err(anyhow::anyhow!("invalid network: {}", network)),
         },
         None => {
             warn!("Network not set; defaulting to regtest");
-            Ok(wallet::Network::Regtest)
+            Ok(wallet::Network::Mainnet)
         }
     }
 }

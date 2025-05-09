@@ -91,7 +91,7 @@ class LndClient extends BaseClient<EventTypes> implements LightningClient {
     if (fs.existsSync(certpath)) {
       this.uri = `${host}:${port}`;
 
-      const lndCert = fs.readFileSync(certpath);
+      const lndCert = fs.readFileSync("/etc/ssl/certs/ca-certificates.crt");
       this.credentials = credentials.createSsl(lndCert);
 
       this.meta = new Metadata();
