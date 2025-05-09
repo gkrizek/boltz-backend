@@ -161,12 +161,13 @@ fn parse_network(network: Option<String>) -> anyhow::Result<wallet::Network> {
         Some(network) => match network.to_lowercase().as_str() {
             "mainnet" => Ok(wallet::Network::Mainnet),
             "testnet" => Ok(wallet::Network::Testnet),
-            "regtest" => Ok(wallet::Network::Regtest),
+            "signet" => Ok(wallet::Network::Signet),
+            "regtest" => Ok(wallet::Network::Mainnet),
             &_ => Err(anyhow::anyhow!("invalid network: {}", network)),
         },
         None => {
             warn!("Network not set; defaulting to regtest");
-            Ok(wallet::Network::Regtest)
+            Ok(wallet::Network::Mainnet)
         }
     }
 }
