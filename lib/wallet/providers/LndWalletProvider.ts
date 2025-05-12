@@ -54,7 +54,23 @@ class LndWalletProvider implements WalletProviderInterface {
       label,
     );
 
-    return this.handleLndTransaction(response.txid, address, blockHeight);
+    const txid = response.txid
+    // use lndClient getOnchainTransactions(blockheight)
+    const { transactionsList } = await this.lndClient.getOnchainTransactions(blockHeight);
+    // iterate over the list until we find our txid
+    const transaction = transactionsList.find((tx) => tx.txHash === txid);
+    // grab the raw transaction
+    if (transaction === undefined) {
+      this.logger.info(`Could not find the transaction for rebroadcasting`);
+      // If we can't find the transaction just try to original version anyway.
+      return this.handleLndTransaction(txid, address, blockHeight);
+    }
+    this.logger.info(`Found the transaction for rebroadcasting, attempting...`);
+    const rawTx = transaction.rawTxHex;
+    // do chainClient.sendRawTransaction()
+    await this.chainClient.sendRawTransaction(rawTx);
+    // then let it look it up
+    return this.handleLndTransaction(txid, address, blockHeight);
   };
 
   public sweepWallet = async (
